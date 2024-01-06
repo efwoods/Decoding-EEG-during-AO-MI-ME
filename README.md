@@ -1,80 +1,328 @@
-# Decoding EEG Rhythms During Action Observation, Motor Imagery and Execution for Standing and Sitting
+Decoding EEG During Action Observation, Motor Imagery, & Motor Execution
+================
+Evan Woods
+2024-01-05
 
-<p align="center"> 
-<img src="fig/overall.png" width="700"/> 
-</p>
+## Support Vector Classifier Results
 
-## Abstract 
- Event-related desynchronization and synchronization (ERD/S) and movement-related cortical potential (MRCP) play an important role in brain-computer interfaces (BCI) for lower limb rehabilitation, particularly in standing and sitting. However, little is known about the differences in the cortical activation between standing and sitting, especially how the brain's intention modulates the pre-movement sensorimotor rhythm as they do for switching movements. In this study, we aim to investigate the decoding of continuous EEG rhythms during action observation (AO), motor imagery (MI), and motor execution (ME) for standing and sitting. We developed a behavioral task in which participants were instructed to perform both AO and MI/ME in regard to the actions of sit-to-stand and stand-to-sit. Our results demonstrated that the ERD was prominent during AO, whereas ERS was typical during MI at the alpha band across the sensorimotor area. A combination of the filter bank common spatial pattern (FBCSP) and support vector machine (SVM) for classification was used for both offline and classifier testing analyses. The offline analysis indicated the classification of AO and MI providing the highest mean accuracy at 82.73±2.54 % in stand-to-sit transition. By applying the classifier testing analysis, we demonstrated the higher performance of decoding neural intentions from the MI paradigm in comparison to the ME paradigm. These observations led us to the promising aspect of using our developed tasks based on the integration of both AO and MI to build future exoskeleton-based rehabilitation systems.
- 
-## Data Description
+### Motor Imagery While Sitting: Detection of Resting vs Action Observation
 
-<p align="center"> 
-<img src="fig/timeline.png" width="700"/> <br>
-<b>Fig. 1</b> Timeline of each experimental trial. The four states displayed include resting (0–4 s), AO (4–8 s), idle (8–9 s), and task performing, either MI or ME (9–13 s). 
-</p>
+    Subject 1:
+         pred
+    truth  0  1
+        0 10  2
+        1  0 10
+    Accuracy: 90.909%
 
-### Experimental protocol
+    Subject 2:
+         pred
+    truth  0  1
+        0  5  3
+        1  3 11
+    Accuracy: 72.727%
 
-To investigate the feasibility of decoding the MI signals (including ERD/S) and MRCPs during the intended movement executions with continuous EEG recordings, the entire experimental procedure composed of two sessions: MI and ME. Each session consisted of 3 runs (5 trials each), incorporating a total of 30 trials. The protocol began with a sitting posture, followed by 5 repeated trials of sit-to-stand and stand-to-sit tasks alternatively. Figure 1 displays the sequence of four states in each trial: R, AO, idle, and task performing states (MI or ME). During the R state, a black screen was displayed on the monitor for 6 seconds (s). The participants were instructed to remain relaxed and motionless. To avoid the ambiguity of the instructions, a video stimulus showing the sit-to-stand or stand-to-sit video task lasted for 4 to 5 s was presented to guide the participants in the AO state. The participants were instructed to perform the tasks of both sessions immediately after the audio cue. In the ME session, the participants were to complete a succession of self-paced voluntary movements after the audio cue. In the MI session, the participants were to commence the imagining of the assigned motion after the audio cue. During MI, the motor initiation onset can be generally obtained from an audio cue or visual cue, whereas during ME, the motor initiation onset from EMG signals.
+    Subject 3:
+         pred
+    truth  0  1
+        0 12  0
+        1  2  8
+    Accuracy: 90.909%
 
-<p align="center"> 
-<img src="fig/sensor_setup.png" width="500"/> <br>
-<b>Fig. 2</b> The sensing system set up for EEG, EMG, and EOG data acquisition. 
-</p>
+    Subject 4:
+         pred
+    truth  0  1
+        0 11  0
+        1  1 10
+    Accuracy: 95.455%
 
-### Data Acquisition
-The sensing system was set up to record the EEG, EOG, and EMG signals simultaneously throughout the experiment, as depicted in  Figure 2.
+    Subject 5:
+         pred
+    truth  0  1
+        0 13  1
+        1  0  8
+    Accuracy: 95.455%
 
- <p align="center"> 
-<img src="fig/EEG-electrodes.001.png" width="700"/> <br>
-<b>Fig. 3</b> The channel configuration of the International 10-20 system (11 EEG and 2 EOG recording electrodes). The left panel corresponding location of each electrode; The right panel indicates the indexing. 
-</p>
+    Subject 6:
+         pred
+    truth  0  1
+        0 10  2
+        1  2  8
+    Accuracy: 81.818%
 
-#### EEG and EOG signals
+    Subject 7:
+         pred
+    truth  0  1
+        0 10  0
+        1  2 10
+    Accuracy: 90.909%
 
-* A _g.USBamp RESEARCH_ was used to recored EEG and EOG signals as displyed in Figure 3.
-* The sampling rate was set at 1200 Hz.
-* **EEG**: 11 electrodes were placed on *FCz*, *C3*, *Cz*, *C4*, *CP3*, *CPz*, *CP4*, *P3*, *Pz*, *P4*, and *POz*
-* **EOG**: 2 electrodes were placed on under (*VEOG*) and next (*HEOG*) to the outer canthus of the right eye
-* The impedance of both EEG and EOG signals was maintained at below 10 *k*Ω throughout the experiment
-* EEG and EOG signals were provided on both MI and ME sessions
-* The raw EEG and EOG on each sit-to-stand/stand-to-sit transition of MI/ME session were formed in a dimension of participants×runs×trials×channels×time points (8×3×5×6×16800).
+    Subject 8:
+         pred
+    truth  0  1
+        0 10  3
+        1  1  8
+    Accuracy: 81.818%
 
-<p align="center"> 
-<img src="fig/EMG_data_description_new.001.jpeg" width="500"/> <br>
-<b>Fig. 4</b> The channel configuration of the 6 EMG recording electrodes, which shows the indexing corresponding location of each electrode. 
-</p>
+    Mean Accuracy: 87.500%.
+    Standard Error: ±7.966%.
 
-#### EMG signals
-* An _OpenBCI_ was used to recorded EMG signals.
-* The sampling rate was set at 250 Hz.
-* 6 electrodes were placed on rectus femoris (*RF*), tibialis anticus (*TA*), and  gastrocnemius lateralis (*GL*) of two lower limbs as displyed in Figure 4.
-* There was only recording EMGs on ME session
-* The raw EMG of each sit-to-stand/stand-to-sit transition was formed in a dimension of participants×runs×trials×channels×time points (8×3×5×6×3500).
+### Motor Imagery While Sitting: Detection of Action Observation vs Motor Imagery
 
-### Dataset
+    Subject 1:
+         pred
+    truth  0  1
+        0 13  0
+        1  0  9
+    Accuracy: 100.000%
 
-Raw dataset available on [Decoding-EEG-during-AO-MI-ME Pages](https://vistec-my.sharepoint.com/:f:/g/personal/1830808_vistec_ac_th/EryhjI8X11lDnQgDRp_zmyUBG7KzPPD-tsm--5lIASdM9A?e=nMl59s) \
-(Paste dataset into folder: "pysitstand/raw_data") 
+    Subject 2:
+         pred
+    truth  0  1
+        0 11  0
+        1  2  9
+    Accuracy: 90.909%
 
-### Dependencies
-* [MNE-Python](https://mne.tools/stable/index.html)
-* [EEGLAB version eeglab2019_0](https://sccn.ucsd.edu/eeglab/index.php)\
-(Paste EEGLAB into folder: "pysitstand/eeglab2019_0")
-* [Riemannian Artifact Subspace Reconstruction Matlab Toolbox](https://github.com/s4rify/rASRMatlab)\
-(Paste rASRMatlab and its dependencies into folder: "pysitstand/eeglab2019_0/plugins/rASRMatlab")
+    Subject 3:
+         pred
+    truth  0  1
+        0 11  1
+        1  1  9
+    Accuracy: 90.909%
 
+    Subject 4:
+         pred
+    truth  0  1
+        0 13  0
+        1  0  9
+    Accuracy: 100.000%
 
-### Citation ###
-When using (any part) of this dataset, please cite [our paper](https://ieeexplore.ieee.org/abstract/document/9130151)
+    Subject 5:
+         pred
+    truth  0  1
+        0 14  0
+        1  1  7
+    Accuracy: 95.455%
 
-    @ARTICLE{9130151,
-    author={R. {Chaisaen} and P. {Autthasan} and N. {Mingchinda} and P. {Leelaarporn} and N. {Kunaseth} and S. {Tammajarung} and P. {Manoonpong} and S. C. {Mukhopadhyay} and T. {Wilaiprasitporn}},
-    journal={IEEE Sensors Journal}, 
-    title={Decoding EEG Rhythms During Action Observation, Motor Imagery, and Execution for Standing and Sitting}, 
-    year={2020},
-    volume={20},
-    number={22},
-    pages={13776-13786},
-    doi={10.1109/JSEN.2020.3005968}}
+    Subject 6:
+         pred
+    truth  0  1
+        0 12  2
+        1  0  8
+    Accuracy: 90.909%
+
+    Subject 7:
+         pred
+    truth  0  1
+        0 10  0
+        1  0 12
+    Accuracy: 100.000%
+
+    Subject 8:
+         pred
+    truth  0  1
+        0 13  2
+        1  0  7
+    Accuracy: 90.909%
+
+    Mean Accuracy: 94.886%.
+    Standard Error: ±4.505%.
+
+### Motor Imagery While Standing: Detection of Resting vs Action Observation
+
+    Subject 1:
+         pred
+    truth  0  1
+        0 13  0
+        1  0  9
+    Accuracy: 100.000%
+
+    Subject 2:
+         pred
+    truth  0  1
+        0  9  0
+        1  1 12
+    Accuracy: 95.455%
+
+    Subject 3:
+         pred
+    truth  0  1
+        0 13  1
+        1  0  8
+    Accuracy: 95.455%
+
+    Subject 4:
+         pred
+    truth  0  1
+        0 12  0
+        1  0 10
+    Accuracy: 100.000%
+
+    Subject 5:
+         pred
+    truth  0  1
+        0 13  1
+        1  1  7
+    Accuracy: 90.909%
+
+    Subject 6:
+         pred
+    truth  0  1
+        0 10  1
+        1  0 11
+    Accuracy: 95.455%
+
+    Subject 7:
+         pred
+    truth  0  1
+        0 10  0
+        1  0 12
+    Accuracy: 100.000%
+
+    Subject 8:
+         pred
+    truth  0  1
+        0 11  0
+        1  0 11
+    Accuracy: 100.000%
+
+    Mean Accuracy: 97.159%.
+    Standard Error: ±3.382%.
+
+### Motor Imagery While Standing: Detection of Action Observation vs Motor Imagery
+
+    Subject 1:
+         pred
+    truth  0  1
+        0 13  0
+        1  0  9
+    Accuracy: 100.000%
+
+    Subject 2:
+         pred
+    truth  0  1
+        0  8  1
+        1  1 12
+    Accuracy: 90.909%
+
+    Subject 3:
+         pred
+    truth  0  1
+        0 13  1
+        1  0  8
+    Accuracy: 95.455%
+
+    Subject 4:
+         pred
+    truth  0  1
+        0 11  1
+        1  0 10
+    Accuracy: 95.455%
+
+    Subject 5:
+         pred
+    truth  0  1
+        0 13  1
+        1  1  7
+    Accuracy: 90.909%
+
+    Subject 6:
+         pred
+    truth  0  1
+        0 10  1
+        1  0 11
+    Accuracy: 95.455%
+
+    Subject 7:
+         pred
+    truth  0  1
+        0 10  0
+        1  0 12
+    Accuracy: 100.000%
+
+    Subject 8:
+         pred
+    truth  0  1
+        0 11  0
+        1  0 11
+    Accuracy: 100.000%
+
+    Mean Accuracy: 96.023%.
+    Standard Error: ±3.793%.
+
+### Comparision Against Results of Prior Research
+
+    The highest mean accuracy of the classifiers in the prior research is: 82.73%
+    with a standard error of ±2.54.
+
+    The lowest mean accuracy of the classifiers is: 87.500% with a standard error of
+    7.966%.
+
+    The highest mean accuracy of the classifiers is: 97.159% with a standard error
+    of 3.382%.
+
+## Increasing a Subject’s Model Accuracy
+
+    The lowest performing model of the Resting vs. Action Observation
+    classifications is the model for subject #2. The accuracy of subject #2's model
+    is: 72.727.
+
+## Explore the subject with the lowest performing model’s data and find outliers, high-leverage, or non-linearities.
+
+## Logistic Regression: Training & Validation
+
+              truth
+    prediction  0  1
+             0 16  4
+             1  6 26
+
+    Validation Accuracy of Logistic Regression: 80.769%.
+
+### Detecting Outliers
+
+<img src="decoding-eeg-rhythms-during-ao-mi-me_files/figure-gfm/unnamed-chunk-34-1.png" width="70%" style="display: block; margin: auto;" />
+
+    There are no detected outliers in the logistic regression fit on the subject
+    with the lowest performing model's data.
+
+### Detecting and Removing High-Leverage Values
+
+    There are 16 high-leverage values:
+
+          122        40        33       100        42        54        60       166 
+    0.1525843 0.1392962 0.1230248 0.2702669 0.1232194 0.1294163 0.1583125 0.1634064 
+          291       190       298       273       209        75        47       105 
+    0.1968935 0.2429515 0.1299119 0.1517439 0.1382543 0.1825471 0.1501227 0.1632604 
+
+### Refitting a Logistic Regression Model
+
+              truth
+    prediction  0  1
+             0 17  2
+             1  5 28
+
+    Validation Accuracy of Logistic Regression with no high leverage: 86.538%.
+
+              truth
+    prediction  0  1
+             0  5  3
+             1  3 11
+
+    Accuracy of Logistic Regression on the subject with the lowest performing
+    model's Test Data after removing high-leverage: 72.727%. The previous accuracy
+    on test data with an SVM was: 72.727%.
+
+### Refitting the Lowest Performing Support Vector Classifier Model
+
+              truth
+    prediction  0  1
+             0  7  3
+             1  1 11
+
+    [1] 81.81818
+
+### Results
+
+    The validation accuracy of the logistic regression model on the subject with
+    the lowest performing model's data increased model performance from 80.769% to
+    86.538% after removing high-leverage values detected in the subject's training
+    data.
